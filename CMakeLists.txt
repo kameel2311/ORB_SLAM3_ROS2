@@ -46,6 +46,13 @@ add_executable(rgbd
 )
 ament_target_dependencies(rgbd rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin)
 
+# Adding RGBD-loc
+add_executable(rgbd-loc
+  src/rgbd-loc/rgbd.cpp
+  src/rgbd-loc/rgbd-slam-node.cpp
+)
+ament_target_dependencies(rgbd-loc rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin)
+
 add_executable(stereo
   src/stereo/stereo.cpp
   src/stereo/stereo-slam-node.cpp
@@ -59,7 +66,7 @@ add_executable(stereo-inertial
 )
 ament_target_dependencies(stereo-inertial rclcpp sensor_msgs cv_bridge ORB_SLAM3 Pangolin)
 
-install(TARGETS mono rgbd stereo stereo-inertial
+install(TARGETS mono rgbd stereo stereo-inertial rgbd-loc
   DESTINATION lib/${PROJECT_NAME})
 
 # Install launch files.
