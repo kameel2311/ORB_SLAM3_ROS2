@@ -10,9 +10,9 @@
 
 int main(int argc, char **argv)
 {
-    if(argc < 3)
+    if(argc < 4)
     {
-        std::cerr << "\nUsage: ros2 run orbslam rgbd path_to_vocabulary path_to_settings" << std::endl;
+        std::cerr << "\nUsage: ros2 run orbslam rgbd path_to_vocabulary path_to_settings output_saving_file_path" << std::endl;
         return 1;
     }
 
@@ -24,7 +24,10 @@ int main(int argc, char **argv)
     bool visualization = true;
     ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::RGBD, visualization);
 
-    auto node = std::make_shared<RgbdSlamNode>(&SLAM);
+    // Pose Saving Directory
+    const std::string saving_file_directory = argv[3];
+
+    auto node = std::make_shared<RgbdSlamNode>(&SLAM, &saving_file_directory);
     std::cout << "============================ " << std::endl;
 
     rclcpp::spin(node);

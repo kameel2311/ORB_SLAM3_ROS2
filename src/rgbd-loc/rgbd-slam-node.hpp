@@ -25,7 +25,7 @@
 class RgbdSlamNode : public rclcpp::Node
 {
 public:
-    RgbdSlamNode(ORB_SLAM3::System* pSLAM);
+    RgbdSlamNode(ORB_SLAM3::System* pSLAM, const std::string* saving_file_directory);
 
     ~RgbdSlamNode();
 
@@ -44,6 +44,7 @@ private:
     std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image> > depth_sub;
 
     std::shared_ptr<message_filters::Synchronizer<approximate_sync_policy> > syncApproximate;
+    const std::string* m_saving_file_directory;
 };
 
 #endif

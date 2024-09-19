@@ -4,10 +4,11 @@
 
 using std::placeholders::_1;
 
-RgbdSlamNode::RgbdSlamNode(ORB_SLAM3::System* pSLAM)
+RgbdSlamNode::RgbdSlamNode(ORB_SLAM3::System* pSLAM, const std::string* saving_file_directory)
 :   Node("ORB_SLAM3_ROS2"),
     m_SLAM(pSLAM)
 {
+    m_saving_file_directory = saving_file_directory;
     rgb_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "camera/rgb");
     depth_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "camera/depth");
 
@@ -27,7 +28,7 @@ RgbdSlamNode::~RgbdSlamNode()
 
     // Save camera trajectory
     // m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
-    m_SLAM->SaveTrajectoryTUM("FrameTrajectoryFormat_RGBD-VO.txt");
+    m_SLAM->SaveTrajectoryTUM(*m_saving_file_directory);
 
 }
 
