@@ -3,13 +3,30 @@
 #include <fstream>
 #include <chrono>
 
+#include <signal.h>
+
 #include "rclcpp/rclcpp.hpp"
 #include "rgbd-slam-node.hpp"
 
 #include "System.h"
 
+// Global shutdown flag
+std::atomic_bool g_shutdown_requested(false);
+
+// Signal handler for SIGTERM and SIGINT
+void signalHandler(int signum)
+{
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Received signal: %d", signum);
+    g_shutdown_requested = true;
+    cout << "SIGNAL Recieved ... Shutting down..." << endl;
+    rclcpp::shutdown();  // Initiates the ROS2 shutdown process
+}
+
 int main(int argc, char **argv)
 {
+    signal(SIGINT, signalHandler);
+    signal(SIGTERM, signalHandler);
+    
     if(argc < 4)
     {
         std::cerr << "\nUsage: ros2 run orbslam rgbd path_to_vocabulary path_to_settings output_saving_file_path" << std::endl;
@@ -30,7 +47,13 @@ int main(int argc, char **argv)
     auto node = std::make_shared<RgbdSlamNode>(&SLAM, &saving_file_directory);
     std::cout << "============================ " << std::endl;
 
-    rclcpp::spin(node);
+    // rclcpp::spin(node);
+    // Spin the node, will exit when rclcpp::shutdown() is called
+    while (rclcpp::ok() && !g_shutdown_requested)
+    {
+        rclcpp::spin_some(node);
+        // Sleep or do other work
+    }
     rclcpp::shutdown();
 
     return 0;

@@ -16,7 +16,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+# find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(message_filters REQUIRED)
@@ -68,6 +70,15 @@ ament_target_dependencies(stereo-inertial rclcpp sensor_msgs cv_bridge ORB_SLAM3
 
 install(TARGETS mono rgbd stereo stereo-inertial rgbd-loc
   DESTINATION lib/${PROJECT_NAME})
+
+# # Install Python modules
+# ament_python_install_package(${PROJECT_NAME})
+
+# Install Python executables
+install(PROGRAMS
+  scripts/Shutdown.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 # Install launch files.
 #install(DIRECTORY launch config vocabulary
