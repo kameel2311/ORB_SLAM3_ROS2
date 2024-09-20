@@ -27,9 +27,9 @@ int main(int argc, char **argv)
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
     
-    if(argc < 4)
+    if(argc < 5)
     {
-        std::cerr << "\nUsage: ros2 run orbslam rgbd path_to_vocabulary path_to_settings output_saving_file_path" << std::endl;
+        std::cerr << "\nUsage: ros2 run orbslam rgbd path_to_vocabulary path_to_settings output_saving_file_path visualization_bool" << std::endl;
         return 1;
     }
 
@@ -38,7 +38,18 @@ int main(int argc, char **argv)
     // malloc error using new.. try shared ptr
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
 
-    bool visualization = true;
+    // bool visualization = true;
+    bool visualization;
+    if (std::string(argv[4]) == "true")
+    {
+        std::cout << "Visualization is ON" << std::endl;
+        visualization = true;
+    }
+    else
+    {
+        std::cout << "Visualization is OFF" << std::endl;
+        visualization = false;
+    }
     ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::RGBD, visualization);
 
     // Pose Saving Directory
