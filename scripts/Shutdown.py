@@ -90,7 +90,12 @@ class ShutdownNode(Node):
                     proc.info["cmdline"]
                 ):
                     self.get_logger().info(f"Found {process_name} PID: {proc.pid}")
-                    os.kill(proc.pid, signal.SIGINT)
+                    for _ in range(3):
+                        self.get_logger().info(f"Sending SIGINT to {process_name}")
+                        os.kill(proc.pid, signal.SIGINT)
+                        time.sleep(5)
+                        if not psutil.pid_exists(proc.pid):
+                            break
                     time.sleep(2)
                     if psutil.pid_exists(proc.pid):
                         self.get_logger().warn(
