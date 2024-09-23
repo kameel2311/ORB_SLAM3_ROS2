@@ -78,6 +78,9 @@ class ShutdownNode(Node):
             "icp_odometry",
             "rtabmap_odom",
             "orbslam3_rgbd_loc",
+            "orbslam3_stereo_loc",
+            "stereo_loc",
+            "rgbd_loc",
         ]
 
         for process_name in rtabmap_processes:

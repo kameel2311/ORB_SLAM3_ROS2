@@ -4,13 +4,16 @@
 
 using std::placeholders::_1;
 using std::placeholders::_2;
+// using std::placeholders::_3;
 
-StereoSlamNode::StereoSlamNode(ORB_SLAM3::System* pSLAM, const string &strSettingsFile, const string &strDoRectify)
+StereoSlamNode::StereoSlamNode(ORB_SLAM3::System* pSLAM, const string &strSettingsFile, const string &strDoRectify, const std::string* saving_file_directory)
 :   Node("ORB_SLAM3_ROS2"),
     m_SLAM(pSLAM)
 {
     stringstream ss(strDoRectify);
     ss >> boolalpha >> doRectify;
+
+    m_saving_file_directory = saving_file_directory;
 
     if (doRectify){
 
@@ -53,6 +56,10 @@ StereoSlamNode::StereoSlamNode(ORB_SLAM3::System* pSLAM, const string &strSettin
 
     syncApproximate = std::make_shared<message_filters::Synchronizer<approximate_sync_policy> >(approximate_sync_policy(10), *left_sub, *right_sub);
     syncApproximate->registerCallback(&StereoSlamNode::GrabStereo, this);
+
+    cout << "Turning On Localizaiton Mode " << endl;
+    m_SLAM->ActivateLocalizationMode();
+    cout << "Localization Mode Activated " << endl;
 }
 
 StereoSlamNode::~StereoSlamNode()
@@ -61,7 +68,9 @@ StereoSlamNode::~StereoSlamNode()
     m_SLAM->Shutdown();
 
     // Save camera trajectory
-    m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    // m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    cout << *m_saving_file_directory << endl;
+    m_SLAM->SaveTrajectoryTUM(*m_saving_file_directory);
 }
 
 void StereoSlamNode::GrabStereo(const ImageMsg::SharedPtr msgLeft, const ImageMsg::SharedPtr msgRight)

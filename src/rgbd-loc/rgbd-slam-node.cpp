@@ -28,6 +28,7 @@ RgbdSlamNode::~RgbdSlamNode()
 
     // Save camera trajectory
     // m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    cout << "Saving Trajectory" << endl;
     m_SLAM->SaveTrajectoryTUM(*m_saving_file_directory);
 
 }

@@ -1,12 +1,12 @@
-#include <iostream>
-#include <algorithm>
-#include <fstream>
-#include <chrono>
+#include<iostream>
+#include<algorithm>
+#include<fstream>
+#include<chrono>
 
 #include <signal.h>
 
 #include "rclcpp/rclcpp.hpp"
-#include "rgbd-slam-node.hpp"
+#include "stereo-slam-node.hpp"
 
 #include "System.h"
 
@@ -27,9 +27,9 @@ int main(int argc, char **argv)
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
     
-    if(argc < 5)
+    if(argc < 6)
     {
-        std::cerr << "\nUsage: ros2 run orbslam rgbd-loc path_to_vocabulary path_to_settings output_saving_file_path visualization_bool" << std::endl;
+        std::cerr << "\nUsage: ros2 run orbslam stereo-loc path_to_vocabulary path_to_settings do_rectify file_saving_path visualization_bool" << std::endl;
         return 1;
     }
 
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
     // bool visualization = true;
     bool visualization;
-    if (std::string(argv[4]) == "true")
+    if (std::string(argv[5]) == "true")
     {
         std::cout << "Visualization is ON" << std::endl;
         visualization = true;
@@ -50,16 +50,14 @@ int main(int argc, char **argv)
         std::cout << "Visualization is OFF" << std::endl;
         visualization = false;
     }
-    ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::RGBD, visualization);
+    ORB_SLAM3::System pSLAM(argv[1], argv[2], ORB_SLAM3::System::STEREO, visualization);
 
-    // Pose Saving Directory
-    const std::string saving_file_directory = argv[3];
+    const std::string saving_file_directory = argv[4];
 
-    auto node = std::make_shared<RgbdSlamNode>(&SLAM, &saving_file_directory);
+    auto node = std::make_shared<StereoSlamNode>(&pSLAM, argv[2], argv[3], &saving_file_directory);
     std::cout << "============================ " << std::endl;
 
     // rclcpp::spin(node);
-    // Spin the node, will exit when rclcpp::shutdown() is called
     while (rclcpp::ok() && !g_shutdown_requested)
     {
         rclcpp::spin_some(node);

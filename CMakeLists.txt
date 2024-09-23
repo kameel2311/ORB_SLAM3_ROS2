@@ -55,6 +55,13 @@ add_executable(rgbd-loc
 )
 ament_target_dependencies(rgbd-loc rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin)
 
+# Adding Stereo-loc
+add_executable(stereo-loc
+  src/stereo-loc/stereo.cpp
+  src/stereo-loc/stereo-slam-node.cpp
+)
+ament_target_dependencies(stereo-loc rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin)
+
 add_executable(stereo
   src/stereo/stereo.cpp
   src/stereo/stereo-slam-node.cpp
@@ -68,7 +75,7 @@ add_executable(stereo-inertial
 )
 ament_target_dependencies(stereo-inertial rclcpp sensor_msgs cv_bridge ORB_SLAM3 Pangolin)
 
-install(TARGETS mono rgbd stereo stereo-inertial rgbd-loc
+install(TARGETS mono rgbd stereo stereo-inertial rgbd-loc stereo-loc
   DESTINATION lib/${PROJECT_NAME})
 
 # # Install Python modules
