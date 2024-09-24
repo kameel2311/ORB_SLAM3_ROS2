@@ -72,11 +72,11 @@ class ShutdownNode(Node):
     def shutdown_rtabmap_processes(self):
         rtabmap_processes = [
             "stereo_odometry",
-            "rtabmap",
-            "rtabmapviz",
+            # "rtabmap",
+            # "rtabmapviz",
             "rgbd_odometry",
-            "icp_odometry",
-            "rtabmap_odom",
+            # "icp_odometry",
+            # "rtabmap_odom",
             "orbslam3_rgbd_loc",
             "orbslam3_stereo_loc",
             "stereo_loc",
@@ -95,10 +95,11 @@ class ShutdownNode(Node):
                     self.get_logger().info(f"Found {process_name} PID: {proc.pid}")
                     for _ in range(3):
                         self.get_logger().info(f"Sending SIGINT to {process_name}")
-                        os.kill(proc.pid, signal.SIGINT)
-                        time.sleep(5)
-                        if not psutil.pid_exists(proc.pid):
-                            break
+                        if psutil.pid_exists(proc.pid):
+                            os.kill(proc.pid, signal.SIGINT)
+                            time.sleep(5)
+                        # if not psutil.pid_exists(proc.pid):
+                        #     break
                     time.sleep(2)
                     if psutil.pid_exists(proc.pid):
                         self.get_logger().warn(
