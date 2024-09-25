@@ -69,8 +69,24 @@ StereoSlamNode::~StereoSlamNode()
 
     // Save camera trajectory
     // m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
-    cout << *m_saving_file_directory << endl;
+    cout << "Saving Trajectory" << endl;
     m_SLAM->SaveTrajectoryTUM(*m_saving_file_directory);
+    cout << "Deleting classes" << endl;
+    delete m_SLAM;
+    m_SLAM = nullptr;
+
+    // Clear/reset shared pointers
+    if (syncApproximate) {
+        syncApproximate.reset();
+    }
+
+    if (left_sub) {
+        left_sub.reset();
+    }
+
+    if (right_sub) {
+        right_sub.reset();
+    }
 }
 
 void StereoSlamNode::GrabStereo(const ImageMsg::SharedPtr msgLeft, const ImageMsg::SharedPtr msgRight)

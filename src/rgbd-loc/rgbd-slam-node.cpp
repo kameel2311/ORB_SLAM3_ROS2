@@ -30,6 +30,22 @@ RgbdSlamNode::~RgbdSlamNode()
     // m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
     cout << "Saving Trajectory" << endl;
     m_SLAM->SaveTrajectoryTUM(*m_saving_file_directory);
+    cout << "Deleting classes" << endl;
+    delete m_SLAM;
+    m_SLAM = nullptr;
+
+    // Clear/reset shared pointers
+    if (syncApproximate) {
+        syncApproximate.reset();
+    }
+
+    if (rgb_sub) {
+        rgb_sub.reset();
+    }
+
+    if (depth_sub) {
+        depth_sub.reset();
+    }
 
 }
 
