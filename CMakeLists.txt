@@ -17,6 +17,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(message_filters REQUIRED)
@@ -47,6 +48,20 @@ add_executable(rgbd
 )
 ament_target_dependencies(rgbd rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin)
 
+# Adding RGBD-loc
+add_executable(rgbd-loc
+  src/rgbd-loc/rgbd.cpp
+  src/rgbd-loc/rgbd-slam-node.cpp
+)
+ament_target_dependencies(rgbd-loc rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin)
+
+# Adding Stereo-loc
+add_executable(stereo-loc
+  src/stereo-loc/stereo.cpp
+  src/stereo-loc/stereo-slam-node.cpp
+)
+ament_target_dependencies(stereo-loc rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin)
+
 add_executable(stereo
   src/stereo/stereo.cpp
   src/stereo/stereo-slam-node.cpp
@@ -60,8 +75,13 @@ add_executable(stereo-inertial
 )
 ament_target_dependencies(stereo-inertial rclcpp sensor_msgs cv_bridge ORB_SLAM3 Pangolin)
 
-install(TARGETS mono rgbd stereo stereo-inertial
+install(TARGETS mono rgbd stereo stereo-inertial rgbd-loc stereo-loc
   DESTINATION lib/${PROJECT_NAME})
+
+install(PROGRAMS
+  scripts/Shutdown.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 target_link_libraries(stereo ${OpenCV_LIBS})
 target_link_libraries(stereo-inertial ${OpenCV_LIBS})
