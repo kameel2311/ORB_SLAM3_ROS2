@@ -87,6 +87,8 @@ target_link_libraries(stereo ${OpenCV_LIBS})
 target_link_libraries(stereo-inertial ${OpenCV_LIBS})
 target_link_libraries(mono ${OpenCV_LIBS})
 target_link_libraries(rgbd ${OpenCV_LIBS})
+target_link_libraries(rgbd-loc ${OpenCV_LIBS})
+target_link_libraries(stereo-loc ${OpenCV_LIBS})
 
 # Install launch files.
 #install(DIRECTORY launch config vocabulary

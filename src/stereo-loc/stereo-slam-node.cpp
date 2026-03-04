@@ -50,16 +50,16 @@ StereoSlamNode::StereoSlamNode(ORB_SLAM3::System* pSLAM, const string &strSettin
         cv::initUndistortRectifyMap(K_l,D_l,R_l,P_l.rowRange(0,3).colRange(0,3),cv::Size(cols_l,rows_l),CV_32F,M1l,M2l);
         cv::initUndistortRectifyMap(K_r,D_r,R_r,P_r.rowRange(0,3).colRange(0,3),cv::Size(cols_r,rows_r),CV_32F,M1r,M2r);
     }
-
-    left_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "/ir_left");
-    right_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "/ir_right");
+    left_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(this, "/ir_left");
+    right_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(this, "/ir_right");
 
     syncApproximate = std::make_shared<message_filters::Synchronizer<approximate_sync_policy> >(approximate_sync_policy(10), *left_sub, *right_sub);
     syncApproximate->registerCallback(&StereoSlamNode::GrabStereo, this);
 
-    cout << "Turning On Localizaiton Mode " << endl;
-    m_SLAM->ActivateLocalizationMode();
-    cout << "Localization Mode Activated " << endl;
+    // TODO: VO MODE NOT YET SUPPORTED, NEEDS REFACTORING ON THE BACKEND SIDE
+    // cout << "Turning On Localizaiton Mode " << endl;
+    // m_SLAM->ActivateLocalizationMode();
+    // cout << "Localization Mode Activated " << endl;
 }
 
 StereoSlamNode::~StereoSlamNode()
