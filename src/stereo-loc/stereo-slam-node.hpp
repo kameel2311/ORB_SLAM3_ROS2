@@ -43,6 +43,10 @@ private:
 
     std::shared_ptr<message_filters::Synchronizer<approximate_sync_policy> > syncApproximate;
     const std::string* m_saving_file_directory;
+
+    int writter_flag;
+    std::deque<double> processing_times_;
+    int frame_count_ = 0;
 };
 
 #endif
